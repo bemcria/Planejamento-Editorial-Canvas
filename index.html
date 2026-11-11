@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planejamento Editorial — Canvas interativo</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<header class="top">
+  <h1>Planejamento Editorial</h1>
+  <div class="tabs" role="tablist" aria-label="Seções do projeto">
+    <button role="tab" id="tab-canvas" aria-controls="panel-canvas" aria-selected="true">Canvas</button>
+    <button role="tab" id="tab-infografico" aria-controls="panel-infografico" aria-selected="false" tabindex="-1">Infográfico</button>
+    <button role="tab" id="tab-fluxograma" aria-controls="panel-fluxograma" aria-selected="false" tabindex="-1">Fluxograma</button>
+  </div>
+</header>
+<main id="main">
+  <section role="tabpanel" id="panel-canvas" aria-labelledby="tab-canvas">
+    <div class="toolbar">
+      <button id="btnAdd" class="primary big" type="button">+ Adicionar post-it</button>
+      <span id="count" class="muted" aria-live="polite"></span>
+      <span class="spacer"></span>
+      <button id="btnExport" type="button">Exportar dados</button>
+      <button id="btnImport" type="button">Importar dados</button>
+      <input id="fileImport" type="file" accept="application/json,.json" hidden>
+      <button id="btnClear" class="danger" type="button">Limpar Canvas</button>
+    </div>
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <img src="assets/canvas.png" draggable="false" alt="Canvas Planejamento Editorial com quatro quadrantes: Quem / Público; O que e Porquê / Conceito Editorial; Quando e Quanto / Distribuição; Como / Mockup.">
+        <div class="layer" id="layer" role="group" aria-label="Área dos post-its"></div>
+      </div>
+    </div>
+    <p class="hint">Arraste pela barra do post-it. Com um post-it focado: setas movem (Shift = passo maior), E edita, D duplica, Delete exclui.</p>
+  </section>
+  <section role="tabpanel" id="panel-infografico" aria-labelledby="tab-infografico" hidden>
+    <div class="viewer-mount" data-src="assets/infografico.png" data-file="infografico.png" data-label="Infográfico" data-alt="Exemplo de página dupla de revista com a identidade Conthabil, anotada com os elementos gráficos: cabeçalho, foto, legenda, título, linha fina, capitular, texto, janela-olho, subtítulo, vinheta, box, imagem vetorial, ilustração, gráfico, tabela, infográfico e assinatura."></div>
+  </section>
+  <section role="tabpanel" id="panel-fluxograma" aria-labelledby="tab-fluxograma" hidden>
+    <div class="viewer-mount" data-src="assets/fluxograma.png" data-file="fluxograma.png" data-label="Fluxograma" data-alt="Fluxograma de Produção de Publicações com 16 etapas: Planejamento Editorial, Reunião de Pauta, Projeto Gráfico, Cronograma, Definição do Espelho, Recebimento dos Anúncios, dos Textos e das Fotos, Diagramação, Revisão e Correções, Aprovações, Tratamento das Fotos, Fechamento de Arquivos, Produção Gráfica, Backup e Distribuição, seguidas da descrição de cada etapa."></div>
+  </section>
+</main>
+
+<dialog id="noteDialog" aria-labelledby="noteTitle">
+  <form id="noteForm" novalidate>
+    <h2 id="noteTitle">Novo post-it</h2>
+    <label for="noteText">Conteúdo</label>
+    <textarea id="noteText" rows="5" maxlength="500" aria-describedby="noteErr noteLen" required></textarea>
+    <div class="row"><span id="noteErr" class="err" role="alert"></span><span id="noteLen" class="muted">0/500</span></div>
+    <fieldset><legend>Cor</legend><div id="colors" class="colors"></div></fieldset>
+    <div class="actions">
+      <button type="button" id="noteCancel">Cancelar</button>
+      <button type="submit" id="noteSubmit" class="primary">Criar post-it</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="confirmDialog" aria-labelledby="confirmMsg">
+  <form method="dialog">
+    <p id="confirmMsg"></p>
+    <div class="actions">
+      <button value="cancel">Cancelar</button>
+      <button value="ok" id="confirmOk" class="danger-solid">Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<template id="viewerTpl">
+  <div class="viewer">
+    <div class="vbar" role="toolbar" aria-label="Controles de visualização">
+      <button type="button" data-v="out" aria-label="Diminuir zoom" title="Diminuir zoom">−</button>
+      <output class="zoom-label" aria-label="Nível de zoom">100%</output>
+      <button type="button" data-v="in" aria-label="Aumentar zoom" title="Aumentar zoom">+</button>
+      <button type="button" data-v="fit">Ajustar à largura</button>
+      <button type="button" data-v="orig">Tamanho original</button>
+      <button type="button" data-v="full">Tela cheia</button>
+      <a class="btn" data-v="dl" download>Baixar imagem</a>
+    </div>
+    <div class="vbox" tabindex="0" role="region"><img alt=""></div>
+  </div>
+</template>
+<script src="js/app.js"></script>
+</body>
+</html>
