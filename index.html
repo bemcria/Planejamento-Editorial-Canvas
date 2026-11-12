@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--
+  Planejamento Editorial — Canvas interativo
+  © 2026 BemCria Criatividade e Estratégia. Todos os direitos reservados.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="BemCria Criatividade e Estratégia">
+<meta name="copyright" content="© 2026 BemCria Criatividade e Estratégia. Todos os direitos reservados.">
+<meta name="description" content="Canvas interativo de Planejamento Editorial com post-its, infográfico e fluxograma. Exporte em PDF, JPG ou PNG.">
+<meta name="theme-color" content="#15803d">
+<title>Planejamento Editorial — Canvas interativo</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<header class="top">
+  <div class="brand">
+    <img class="logo" src="assets/logo-bemcria.png" width="120" height="49" alt="BemCria Criatividade e Estratégia">
+    <h1>Planejamento Editorial</h1>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Seções do projeto">
+    <button role="tab" id="tab-canvas" aria-controls="panel-canvas" aria-selected="true">Canvas</button>
+    <button role="tab" id="tab-infografico" aria-controls="panel-infografico" aria-selected="false" tabindex="-1">Infográfico</button>
+    <button role="tab" id="tab-fluxograma" aria-controls="panel-fluxograma" aria-selected="false" tabindex="-1">Fluxograma</button>
+  </div>
+</header>
+<main id="main">
+  <section role="tabpanel" id="panel-canvas" aria-labelledby="tab-canvas">
+    <div class="toolbar">
+      <button id="btnAdd" class="primary big" type="button">+ Adicionar post-it</button>
+      <span id="count" class="muted" aria-live="polite"></span>
+      <span class="spacer"></span>
+      <button id="btnExport" type="button">Exportar</button>
+      <button id="btnImport" type="button">Importar dados</button>
+      <input id="fileImport" type="file" accept="application/json,.json" hidden>
+      <button id="btnClear" class="danger" type="button">Limpar Canvas</button>
+    </div>
+    <div class="vbar" role="toolbar" aria-label="Zoom do Canvas">
+      <button type="button" id="zOut" aria-label="Diminuir zoom" title="Diminuir zoom">−</button>
+      <output id="zoomLabel" class="zoom-label" aria-label="Nível de zoom">100%</output>
+      <button type="button" id="zIn" aria-label="Aumentar zoom" title="Aumentar zoom">+</button>
+      <button type="button" id="zFit">Ajustar à largura</button>
+      <button type="button" id="zHand" class="tool" data-hand aria-pressed="true" title="Ferramenta Mão: com zoom, arraste a imagem em qualquer direção"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Mão</button>
+    </div>
+    <div class="stage-wrap" id="stageWrap" tabindex="0" role="region" aria-label="Área do Canvas: role para navegar">
+      <div class="stage" id="stage">
+        <img src="assets/canvas.png" draggable="false" alt="Canvas Planejamento Editorial com quatro quadrantes: Quem / Público; O que e Porquê / Conceito Editorial; Quando e Quanto / Distribuição; Como / Mockup.">
+        <div class="layer" id="layer" role="group" aria-label="Área dos post-its"></div>
+      </div>
+    </div>
+    <p class="hint">Com zoom, arraste o fundo do Canvas com a ferramenta Mão para mover a visualização. Arraste o post-it pela barra superior e mude o tamanho pelo canto inferior direito. Com um post-it focado: setas movem (Shift = passo maior), Alt + setas mudam as dimensões, + e − ampliam ou reduzem, E edita, D duplica, Delete exclui.</p>
+  </section>
+  <section role="tabpanel" id="panel-infografico" aria-labelledby="tab-infografico" hidden>
+    <div class="viewer-mount" data-key="infografico" data-src="assets/infografico.png" data-file="infografico.png" data-label="Infográfico" data-alt="Exemplo de página dupla de revista com a identidade Conthabil, anotada com os elementos gráficos: cabeçalho, foto, legenda, título, linha fina, capitular, texto, janela-olho, subtítulo, vinheta, box, imagem vetorial, ilustração, gráfico, tabela, infográfico e assinatura."></div>
+  </section>
+  <section role="tabpanel" id="panel-fluxograma" aria-labelledby="tab-fluxograma" hidden>
+    <div class="viewer-mount" data-key="fluxograma" data-src="assets/fluxograma.png" data-file="fluxograma.png" data-label="Fluxograma" data-alt="Fluxograma de Produção de Publicações com 16 etapas: Planejamento Editorial, Reunião de Pauta, Projeto Gráfico, Cronograma, Definição do Espelho, Recebimento dos Anúncios, dos Textos e das Fotos, Diagramação, Revisão e Correções, Aprovações, Tratamento das Fotos, Fechamento de Arquivos, Produção Gráfica, Backup e Distribuição, seguidas da descrição de cada etapa."></div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p><small>© 2026 BemCria Criatividade e Estratégia. Todos os direitos reservados.</small></p>
+</footer>
+
+<dialog id="noteDialog" aria-labelledby="noteTitle">
+  <form id="noteForm" novalidate>
+    <h2 id="noteTitle">Novo post-it</h2>
+    <label for="noteText">Conteúdo</label>
+    <textarea id="noteText" rows="5" maxlength="500" aria-describedby="noteErr noteLen" required></textarea>
+    <div class="row"><span id="noteErr" class="err" role="alert"></span><span id="noteLen" class="muted">0/500</span></div>
+    <fieldset><legend>Cor</legend><div id="colors" class="colors"></div></fieldset>
+    <fieldset class="size">
+      <legend>Dimensões</legend>
+      <div id="presets" class="presets" role="group" aria-label="Tamanhos predefinidos"></div>
+      <div class="slider">
+        <label for="sizeW">Largura</label><output id="outW" for="sizeW"></output>
+        <input id="sizeW" type="range" min="10" max="45" step="0.5">
+      </div>
+      <div class="slider">
+        <label for="sizeH">Altura</label><output id="outH" for="sizeH"></output>
+        <input id="sizeH" type="range" min="10" max="50" step="0.5">
+      </div>
+      <p class="muted small">Valores em % da largura e da altura do Canvas. Você também pode arrastar o canto inferior direito do post-it.</p>
+    </fieldset>
+    <div class="actions">
+      <button type="button" id="noteCancel">Cancelar</button>
+      <button type="submit" id="noteSubmit" class="primary">Criar post-it</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="exportDialog" aria-labelledby="expTitle">
+  <form id="exportForm" novalidate>
+    <h2 id="expTitle">Exportar</h2>
+    <fieldset>
+      <legend>Formato</legend>
+      <div class="seg">
+        <label><input type="radio" name="fmt" value="pdf" checked><span>PDF</span></label>
+        <label><input type="radio" name="fmt" value="jpg"><span>JPG</span></label>
+        <label><input type="radio" name="fmt" value="png"><span>PNG</span></label>
+        <label><input type="radio" name="fmt" value="json"><span>Dados (JSON)</span></label>
+      </div>
+    </fieldset>
+    <fieldset id="expWhat" class="opts">
+      <legend>Conteúdo</legend>
+      <label><input type="radio" name="what" value="canvas" checked> Canvas com os post-its</label>
+      <label><input type="radio" name="what" value="infografico"> Infográfico</label>
+      <label><input type="radio" name="what" value="fluxograma"> Fluxograma</label>
+      <label><input type="radio" name="what" value="all"> Todas as páginas (um PDF com 3 páginas)</label>
+    </fieldset>
+    <div id="expScaleWrap">
+      <label for="expScale">Resolução</label>
+      <select id="expScale"></select>
+    </div>
+    <p id="expHint" class="muted"></p>
+    <div class="actions">
+      <button type="button" id="expCancel">Cancelar</button>
+      <button type="submit" id="expGo" class="primary">Exportar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="confirmDialog" aria-labelledby="confirmMsg">
+  <form method="dialog">
+    <p id="confirmMsg"></p>
+    <div class="actions">
+      <button value="cancel">Cancelar</button>
+      <button value="ok" id="confirmOk" class="danger-solid">Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<template id="viewerTpl">
+  <div class="viewer">
+    <div class="vbar" role="toolbar" aria-label="Controles de visualização">
+      <button type="button" data-v="out" aria-label="Diminuir zoom" title="Diminuir zoom">−</button>
+      <output class="zoom-label" aria-label="Nível de zoom">100%</output>
+      <button type="button" data-v="in" aria-label="Aumentar zoom" title="Aumentar zoom">+</button>
+      <button type="button" data-v="fit">Ajustar à largura</button>
+      <button type="button" data-v="hand" class="tool" data-hand aria-pressed="true" title="Ferramenta Mão: com zoom, arraste a imagem em qualquer direção"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Mão</button>
+      <button type="button" data-v="orig">Tamanho original</button>
+      <button type="button" data-v="full">Tela cheia</button>
+      <button type="button" data-v="exp" class="primary">Exportar</button>
+      <a class="btn" data-v="dl" download>Baixar imagem</a>
+    </div>
+    <div class="vbox" tabindex="0" role="region"><img alt=""></div>
+  </div>
+</template>
+<script src="js/app.js"></script>
+</body>
+</html>

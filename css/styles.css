@@ -1,0 +1,140 @@
+/*! Planejamento Editorial — Canvas interativo · © 2026 BemCria Criatividade e Estratégia. Todos os direitos reservados. */
+:root{--ink:#3f3f3f;--muted:#5c5c5c;--bg:#f2f3f5;--card:#fff;--line:#c9ccd1;--accent:#15803d;--accent-d:#0f5f2c;--danger:#b42318;--focus:#1d4ed8}
+@media (prefers-color-scheme:dark){:root{--ink:#ececec;--muted:#b4b8bf;--bg:#1b1d20;--card:#26292d;--line:#444a52;--accent:#2fa35b;--accent-d:#238048;--danger:#f97066;--focus:#8ab4ff}.logo{box-sizing:content-box;background:#fff;border-radius:8px;padding:6px 10px}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:#fff;color:#000;padding:8px;z-index:99}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:14px 20px 0;padding-top:calc(14px + env(safe-area-inset-top));padding-left:calc(20px + env(safe-area-inset-left));padding-right:calc(20px + env(safe-area-inset-right));display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 28px}
+.brand{display:flex;align-items:center;gap:16px;min-width:0;padding-bottom:10px}
+.logo{display:block;width:120px;height:auto;flex:none}
+h1{margin:0;padding-left:16px;border-left:1px solid var(--line);font-size:1.35rem;line-height:1.2;font-weight:800;letter-spacing:-.01em}
+.tabs{display:flex;gap:4px;margin-left:auto}
+[role=tab]{border:0;border-bottom:4px solid transparent;background:none;color:var(--muted);font:inherit;font-weight:600;padding:10px 14px;cursor:pointer;min-height:44px;border-radius:0}
+[role=tab]:hover{border-color:transparent;border-bottom-color:var(--line)}
+[role=tab][aria-selected=true]{color:var(--ink);border-bottom-color:var(--accent)}
+main{flex:1;width:100%;padding:12px 16px 24px;max-width:1500px;margin:auto}
+button,.btn,select{touch-action:manipulation}
+button,.btn{font:inherit;font-size:.92rem;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px;min-height:40px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+button:hover,.btn:hover{border-color:var(--ink)}
+button:disabled{opacity:.55;cursor:progress}
+.primary{background:var(--accent);border-color:var(--accent);color:#fff}.primary:hover{background:var(--accent-d);border-color:var(--accent-d)}
+.big{font-size:1rem;padding:10px 20px}
+.danger{color:var(--danger);border-color:var(--danger)}
+.danger-solid{background:var(--danger);border-color:var(--danger);color:#fff}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.spacer{flex:1}.muted{color:var(--muted);font-size:.85rem}.small{font-size:.8rem;margin:8px 0 0}
+
+/* ---------- Canvas e post-its ---------- */
+.stage-wrap{overflow:auto;border:1px solid var(--line);border-radius:6px;background:#fff;-webkit-overflow-scrolling:touch}
+.stage{position:relative;width:100%;--sw:1000px;--fsr:.0105}
+.stage img{display:block;width:100%;height:auto;aspect-ratio:3308 / 2339;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.layer{position:absolute;inset:0;overflow:hidden}
+/* Tudo no post-it é medido em "em": o tamanho da fonte acompanha a largura do Canvas (zoom). */
+.note{position:absolute;width:calc(var(--w) * 100%);height:calc(var(--h) * 100%);left:calc((1 - var(--w)) * var(--x) * 100%);top:calc((1 - var(--h)) * var(--y) * 100%);display:flex;flex-direction:column;overflow:hidden;padding:0 .6em .45em;border-radius:.45em;color:#1f1f1f;box-shadow:0 .45em 1em rgba(0,0,0,.2),0 1px 2px rgba(0,0,0,.25);font-size:calc(var(--sw) * var(--fsr));line-height:1.35}
+.note.dragging,.note.sizing{box-shadow:0 .9em 1.8em rgba(0,0,0,.3)}
+.note.dragging{cursor:move}
+.note:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.note-bar{flex:none;display:flex;align-items:center;justify-content:space-between;min-height:2.3em;margin:0 -.6em;padding:0 .3em 0 .6em;cursor:move;touch-action:none;border-bottom:1px solid rgba(0,0,0,.12)}
+.handle{opacity:.6;display:flex}
+.acts{display:flex;gap:2px}
+.note button{width:max(24px,2.1em);height:max(24px,2.1em);min-height:0;padding:0;border:0;background:transparent;color:#1f1f1f;border-radius:4px}
+.note button:hover{background:rgba(0,0,0,.14)}
+.note svg{width:max(13px,1.15em);height:max(13px,1.15em)}
+.note-text{flex:1;min-height:0;margin:.45em 0 .3em;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.note-date{flex:none;font-size:.8em;line-height:1.35;color:#3a3a3a}
+.note-resize{position:absolute;right:0;bottom:0;width:max(22px,1.8em);height:max(22px,1.8em);cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 0 42%,rgba(0,0,0,.5) 42% 50%,transparent 50% 62%,rgba(0,0,0,.5) 62% 70%,transparent 70% 82%,rgba(0,0,0,.5) 82% 90%,transparent 90%)}
+.hint{font-size:.85rem;color:var(--muted)}
+
+/* ---------- Ferramenta Mão (arrastar a visualização quando há zoom) ---------- */
+.can-pan{cursor:grab}
+.can-pan .note-text,.can-pan .note-date{cursor:inherit}
+.panning,.panning *{cursor:grabbing!important;user-select:none;-webkit-user-select:none}
+.tool svg{width:18px;height:18px;margin-right:6px;flex:none}
+.tool[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.tool[aria-pressed=true]:hover{background:var(--accent-d);border-color:var(--accent-d)}
+@media (pointer:fine){.stage-wrap.zoomed{max-height:80vh;max-height:80dvh}} /* com zoom, a caixa vira uma "janela" onde a Mão move nos dois eixos */
+@media (hover:none) and (pointer:coarse){[data-hand]{display:none}} /* no toque, o dedo já arrasta a imagem */
+
+/* ---------- Diálogos e formulários ---------- */
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);width:min(92vw,460px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow:auto;padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h2{margin:0 0 12px;font-size:1.15rem}
+label,legend{font-weight:600;font-size:.9rem}
+textarea,select{width:100%;margin-top:4px;padding:10px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{resize:vertical}
+textarea[aria-invalid=true]{border-color:var(--danger)}
+.row{display:flex;justify-content:space-between;min-height:22px}.err{color:var(--danger);font-size:.85rem}
+fieldset{border:0;padding:0;margin:8px 0 0;min-width:0}
+fieldset:disabled{opacity:.5}
+.colors{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.colors label{position:relative}
+.colors input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.sw{display:block;width:40px;height:40px;border-radius:50%;border:2px solid rgba(0,0,0,.25)}
+.colors input:checked+.sw{border:3px solid #111;box-shadow:0 0 0 2px #fff,0 0 0 4px #111}
+.colors input:focus-visible+.sw{outline:3px solid var(--focus);outline-offset:4px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.presets button{min-height:36px;padding:4px 12px;font-size:.85rem}
+.slider{display:grid;grid-template-columns:1fr auto;align-items:center;gap:0 8px;margin-top:6px}
+.slider input{grid-column:1 / -1;width:100%;height:32px;margin:0;accent-color:var(--accent)}
+.slider output{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:8px;margin-top:6px}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.seg span{display:flex;align-items:center;justify-content:center;min-height:44px;padding:4px 8px;text-align:center;border:1px solid var(--line);border-radius:8px;font-weight:600}
+.seg input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff}
+.seg input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+.opts label{display:flex;align-items:center;gap:10px;min-height:40px;font-weight:500}
+.opts input{width:20px;height:20px;margin:0;accent-color:var(--accent)}
+#expScaleWrap{margin-top:12px}
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.toast{position:fixed;left:50%;bottom:20px;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,20px);max-width:90vw;padding:12px 18px;border-radius:8px;background:#222;color:#fff;opacity:0;pointer-events:none;transition:.2s;z-index:100}
+.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{background:#b42318}.toast.ok{background:#0f5f2c}
+
+/* ---------- Visualizadores (Infográfico e Fluxograma) ---------- */
+.vbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.zoom-label{min-width:52px;text-align:center;font-weight:600}
+.vbox{overflow:auto;max-height:78vh;max-height:78dvh;border:1px solid var(--line);border-radius:6px;background:#fff;-webkit-overflow-scrolling:touch}
+.vbox img{display:block;max-width:none;height:auto;-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+.viewer:fullscreen{background:var(--bg);padding:12px;display:flex;flex-direction:column}
+.viewer:fullscreen .vbox{max-height:none;flex:1}
+
+/* ---------- Rodapé ---------- */
+.site-foot{border-top:1px solid var(--line);padding:14px 16px;padding-bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;color:var(--muted);background:var(--card)}
+.site-foot p{margin:0}
+
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* ---------- Telas de toque (celulares e tablets) ---------- */
+@media (pointer:coarse){
+  button,.btn{min-height:44px}
+  .note button{min-height:0}
+  .presets button{min-height:40px}
+  .note-resize{width:max(28px,2.2em);height:max(28px,2.2em)}
+}
+
+/* ---------- Telas estreitas ---------- */
+@media (max-width:720px){
+  .top{gap:0 16px;padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right))}
+  .brand{gap:12px;padding-bottom:6px;width:100%}
+  .logo{width:92px}
+  h1{padding-left:12px;font-size:1.1rem}
+  .tabs{margin-left:0;width:100%}
+  [role=tab]{flex:1;padding:10px 4px}
+  main{padding:10px 10px 20px}
+  .toolbar #btnAdd{flex:1 1 100%}
+  .toolbar .spacer{display:none}
+  .toolbar #count{flex:1 1 100%;margin:-2px 0}
+  .toolbar button:not(#btnAdd){flex:1 1 0}
+  .vbar button,.vbar .btn{flex:1 1 auto}
+  .vbar .zoom-label{flex:0 0 auto}
+  .hint{font-size:.8rem}
+}
+@media (max-width:420px){
+  dialog{padding:16px}
+  .actions button{flex:1}
+}
+@media (max-height:480px) and (orientation:landscape){
+  .vbox{max-height:calc(100vh - 120px);max-height:calc(100dvh - 120px)}
+}
